@@ -14,6 +14,10 @@ source("C:\\Users\\park\\Desktop\\paper2 writing for now\\oct02_new_simulation\\
 pred_df <- data.frame(ssc = rep(111, 3200), spc = rep(111, 3200),
                       pcr = rep(111, 3200), pls = rep(111, 3200))
 
+train_df <- data.frame(ssc = rep(111, 3200), spc = rep(111, 3200),
+                      pcr = rep(111, 3200), pls = rep(111, 3200))
+
+
 hits_df <- data.frame(ssc = rep(111, 3200), spc = rep(111, 3200),
                       pcr = rep(111, 3200), pls = rep(111, 3200))
 
@@ -151,13 +155,19 @@ for (rrr in 1:3200){
   pred_df$pcr[rrr] <- pcr$Error$test
   pred_df$pls[rrr] <- pls$Error$test
   
-  # 2. classification rate #
+  # 2. in-sample error (residual) #
+  train_df$ssc[rrr] <- ssc$Error$fit
+  train_df$spc[rrr] <- spc$Error$fit
+  train_df$pcr[rrr] <- pcr$Error$fit
+  train_df$pls[rrr] <- pls$Error$fit
+  
+  # 3. classification rate #
   hits_df$ssc[rrr] <- ssc$W$correcthits
   hits_df$spc[rrr] <- spc$W$correcthits
   hits_df$pcr[rrr] <- pcr$W$correcthits
   hits_df$pls[rrr] <- pls$W$correcthits
   
-  # 3. type identification #
+  # 4. type identification #
   ssc$T_result <- split_check(ssc$T_result)
   spc$T_result <- split_check(spc$T_result)
   pcr$T_result <- split_check(pcr$T_result)
@@ -214,7 +224,7 @@ for (rrr in 1:3200){
     type_list$pls[[i]][rrr] <- pls_type[[i]]$type
   }
   
-  # 4. tucker congruence #
+  # 5. tucker congruence #
   for (i in 1:3){
     
     if(ssc_type[[i]]$type == "2comp_estimated"){
@@ -243,13 +253,13 @@ for (rrr in 1:3200){
   tucker_df$pcr[rrr] <- mean(abs(unlist(lapply(pcr_type, function(x){x[,2]}))), na.rm = TRUE)
   tucker_df$pls[rrr] <- mean(abs(unlist(lapply(pls_type, function(x){x[,2]}))), na.rm = TRUE)
   
-  # 5. true positive rate #
+  # 6. true positive rate #
   ssc_truepo <- unlist(lapply(ssc$T_result, function(x){x$value[4]}))
   spc_truepo <- unlist(lapply(spc$T_result, function(x){x$value[4]}))
   pcr_truepo <- unlist(lapply(pcr$T_result, function(x){x$value[4]}))
   pls_truepo <- unlist(lapply(pls$T_result, function(x){x$value[4]}))
   
-  # true positive rate per component # 
+  # 7. true positive rate per component # 
   truepo_list$ssc[rrr,] <- ssc_truepo
   truepo_list$spc[rrr,] <- spc_truepo
   truepo_list$pcr[rrr,] <- pcr_truepo
@@ -263,7 +273,7 @@ for (rrr in 1:3200){
   
   truepo_df[rrr, is.na(truepo_df[rrr,])] <- 111
   
-  # tuning parameters # 
+  # 8. tuning parameters # 
   alpha_ridge_df$ssc_alpha[rrr] <- sscovr_alpha_ridge$alpha
   alpha_ridge_df$ssc_ridge[rrr] <- sscovr_alpha_ridge$ridge
   alpha_ridge_df$pcr_ridge[rrr] <- scad_ridge
@@ -277,13 +287,13 @@ for (rrr in 1:3200){
     scad_cd <- cbind(scad_cd, 111)
   }
   
-  # 6. tucker on W
+  # 9. tucker on W
   w_tucker_df$ssc[rrr] <- ssc$W$w_tucker
   w_tucker_df$spc[rrr] <- spc$W$w_tucker
   w_tucker_df$pcr[rrr] <- pcr$W$w_tucker
   w_tucker_df$pls[rrr] <- pls$W$w_tucker
   
-  # 7. true positives based on tucker on W
+  # 10. true positives based on tucker on W
   w_truepo_df$ssc[rrr] <- ssc$W$d_overall
   w_truepo_df$spc[rrr] <- spc$W$d_overall
   w_truepo_df$pcr[rrr] <- pcr$W$d_overall
@@ -301,7 +311,7 @@ for (rrr in 1:3200){
   
   cond_df[rrr,] <- cond
   
-  # 8. distinctive 1 and distinctive 2: individual true positive rate
+  # 11. distinctive 1 and distinctive 2: individual true positive rate
   w_d1_truepo_df$ssc[rrr] <- ssc$W$d1
   w_d1_truepo_df$spc[rrr] <- spc$W$d1
   w_d1_truepo_df$pcr[rrr] <- pcr$W$d1
