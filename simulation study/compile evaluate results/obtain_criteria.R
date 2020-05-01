@@ -9,7 +9,7 @@
 # 5. False positive rate (distinctive component): 
 # mean of the "props" (always take account of how many distinctives the method found)
 
-source("C:\\Users\\park\\Desktop\\paper2 writing for now\\oct02_new_simulation\\entire_results\\soogeun\\results_extract\\evaluation_criteria.R")
+source("C:\\Users\\park\\Desktop\\project_sscovr\\sscovr\\simulation study\\compile evaluate results\\evaluation_criteria.R")
 
 pred_df <- data.frame(ssc = rep(111, 3200), spc = rep(111, 3200),
                       pcr = rep(111, 3200), pls = rep(111, 3200))
@@ -38,6 +38,33 @@ w_d1_truepo_df <-  data.frame(ssc = rep(111, 3200), spc = rep(111, 3200),
 
 w_d2_truepo_df <-  data.frame(ssc = rep(111, 3200), spc = rep(111, 3200),
                               pcr = rep(111, 3200), pls = rep(111, 3200))
+
+
+d1_df <-  data.frame(ssc = rep(111, 3200), spc = rep(111, 3200),
+                              pcr = rep(111, 3200), pls = rep(111, 3200),
+                     comps = rep(111, 3200))
+
+d2_df <-  data.frame(ssc = rep(111, 3200), spc = rep(111, 3200),
+                              pcr = rep(111, 3200), pls = rep(111, 3200),
+                     comps = rep(111, 3200))
+
+
+c_df <-  data.frame(ssc = rep(111, 3200), spc = rep(111, 3200),
+                     pcr = rep(111, 3200), pls = rep(111, 3200),
+                     comps = rep(111, 3200))
+
+ssc_compare_with <- data.frame(comp1 = rep(111, 3200),
+                               comp2 = rep(111, 3200))
+
+spc_compare_with <- data.frame(comp1 = rep(111, 3200),
+                               comp2 = rep(111, 3200))
+
+pcr_compare_with <- data.frame(comp1 = rep(111, 3200),
+                               comp2 = rep(111, 3200))
+
+pls_compare_with <- data.frame(comp1 = rep(111, 3200),
+                               comp2 = rep(111, 3200))
+
 
 
 type_list <- list(ssc = data.frame(t1 = rep(111, 3200), t2 = rep(111, 3200),
@@ -84,7 +111,7 @@ cond_df <- data.frame(components = rep(111, 3200), dimension = rep(111, 3200),
 
 for (rrr in 1:3200){
 
-  file_name <- paste("C:\\Users\\park\\Desktop\\paper2 writing for now\\oct02_new_simulation\\entire_results\\soogeun\\results_ridge_top\\ridge_top_", rrr, ".Rdata", sep = "")
+  file_name <- paste("C:\\Users\\park\\Desktop\\Rstudio Github - Copy\\Project2_SPCovR\\final_results\\final_results\\ridge_top_", rrr, ".Rdata", sep = "")
   
   load(file_name)
   
@@ -322,10 +349,45 @@ for (rrr in 1:3200){
   w_d2_truepo_df$pcr[rrr] <- pcr$W$d2
   w_d2_truepo_df$pls[rrr] <- pls$W$d2
   
+  # 11.1. number of common and distinctive components generated in 2-component model
+  # (this is determined by tucker congruence)
+  if (!is.null(ssc$compare_with)){
+    ssc_compare_with[rrr,] <- ssc$compare_with
+    spc_compare_with[rrr,] <- spc$compare_with
+    pcr_compare_with[rrr,] <- pcr$compare_with
+    pls_compare_with[rrr,] <- pls$compare_with
+  }
+  
+  # 12. distinctive checks:
+  # simply informs if distinctive components are found by the weights
+  # without computing tucker congruences
+  
+  ssc_d <- distinctive(estimate = ssc_W)
+  spc_d <- distinctive(estimate = spc_W)
+  pcr_d <- distinctive(estimate = pcr_W)
+  pls_d <- distinctive(estimate = pls_W)
+  
+  d1_df$ssc[rrr] <- colSums(ssc_d)[1]
+  d1_df$spc[rrr] <- colSums(spc_d)[1]
+  d1_df$pcr[rrr] <- colSums(pcr_d)[1]
+  d1_df$pls[rrr] <- colSums(pls_d)[1]
+  d1_df$comps[rrr] <- as.numeric(cond$components)
+  
+  d2_df$ssc[rrr] <- colSums(ssc_d)[2]
+  d2_df$spc[rrr] <- colSums(spc_d)[2]
+  d2_df$pcr[rrr] <- colSums(pcr_d)[2]
+  d2_df$pls[rrr] <- colSums(pls_d)[2]
+  d2_df$comps[rrr] <- as.numeric(cond$components)
+  
+  c_df$ssc[rrr] <- colSums(ssc_d)[3]
+  c_df$spc[rrr] <- colSums(spc_d)[3]
+  c_df$pcr[rrr] <- colSums(pcr_d)[3]
+  c_df$pls[rrr] <- colSums(pls_d)[3]
+  c_df$comps[rrr] <- as.numeric(cond$components)
   
   print(rrr)
   
-  rm(list = loaded)
+  rm(list = setdiff(ls(), loaded))
   
 }
 

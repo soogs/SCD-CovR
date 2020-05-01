@@ -1,5 +1,9 @@
 # functions for the evaluation criteria # 
 
+# dec-16 addition:
+# number of distinctive components
+# (i simply observe if this weights column indicates a distinctive component)
+
 zero <- function(estimate, defined){
   nzeros <- sum(abs(estimate) < 1e-7)
   
@@ -60,8 +64,8 @@ nonzero_D <- function(estimate, defined){
   # which of the column sums equal to 0?
   # if the sum of the first half equals 0, then the component is distinctive to block 2
   
-  d1 <- which(apply(defined[(J/2 + 1):J,], 2, sum) == 0) 
-  d2 <- which(apply(defined[1:(J/2),], 2, sum) == 0)
+  d1 <- which(apply(abs(defined[(J/2 + 1):J,]), 2, sum) < 1e-7) 
+  d2 <- which(apply(abs(defined[1:(J/2),]), 2, sum) < 1e-7)
   
   estimate <- estimate[,tucker$perm]
   # arrange the estimated weights in the same order as the defined matrix
@@ -383,14 +387,30 @@ nonzero_D2 <- function(estimate, defined, compare_with){
     
   }
   
-  if(sum(compare_with == 3) > 0){
-    ratios <- ratios[which(compare_with != 3)]
-  }
+  ratio_c <- 0
+  ratio_d1 <- 0
+  ratio_d2 <- 0
+  
+  c_index <- which(compare_with == 3)
+  d1_index <- which(compare_with == 1)
+  d2_index <- which(compare_with == 2)
+  
+  ratio_c <- ratios[c_index]
+  ratio_d1 <- ratios[d1_index]
+  ratio_d2 <- ratios[d2_index]
+  
+  if (sum(compare_with == 1) == 0){
+    ratio_d1 <- 0
+  } 
+  
+  if (sum(compare_with == 2) == 0){
+    ratio_d2 <- 0
+  } 
   
   ratio <- mean(ratios)
   
   ratio_list <- list(ratio = ratio, 
-                     ratio_d1 = ratios[1], ratio_d2 = ratios[2])
+                     ratio_d1 = ratio_d1, ratio_d2 = ratio_d2)
   
   return(ratio_list)
 }
@@ -478,7 +498,7 @@ perf2 <- function(W_estimate, W_defined,
   
   Errors <- data.frame(fit = fit, test = pred_test, true = pred_true)
   
-  returnobjects <- list(W = Ws, Error = Errors, T_result = T_type)
+  returnobjects <- list(W = Ws, Error = Errors, T_result = T_type, compare_with = compare_with)
   
   return(returnobjects)
 }
@@ -573,3 +593,31 @@ split_check <- function(T_result){
   
   return(T_result)
 }
+
+distinctive <- function(estimate){
+  J <- nrow(estimate)
+  
+  # if this is zero, that column is distinctive to block 2
+  d2 <- colSums(abs(estimate[1:(J/2),]) > 1e-7)
+  
+  # if this is zero, that column is distinctive to block 1
+  d1 <- colSums(abs(estimate[(J/2 + 1):(J),]) > 1e-7)
+  
+  # if the entire column is zero, do not count this column in
+  # (this is considered as neither distinct nor common)
+  no_index <- which(colSums(abs(estimate) > 1e-7) == 0)
+  
+  common <- as.numeric(((d1 != 0) + (d2 != 0)) > 1)
+  
+  d2 <- as.numeric(d2 == 0)
+  d1 <- as.numeric(d1 == 0)
+  
+  d2[no_index] <- 0
+  d1[no_index] <- 0
+  common[no_index] <- 0
+  
+  result <- data.frame(d1 = d1, d2 = d2, common = common)
+  
+  return(result)
+}
+  

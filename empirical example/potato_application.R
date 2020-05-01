@@ -94,6 +94,35 @@ var_label <-c(
 
 colnames(potato) <- var_label
 
+varieties <- c('v1',
+               'v2',
+               'v3',
+               'v4',
+               'v5',
+               'v6',
+               'v10',
+               'v11',
+               'v30',
+               'v31',
+               'v20',
+               'v21',
+               'v40',
+               'v41',
+               'v400',
+               'v401',
+               'v300',
+               'v301',
+               'v601',
+               'v603',
+               'v1',
+               'v2',
+               'v3',
+               'v4',
+               'v5',
+               'v6')
+
+potato <- cbind(varieties, potato)
+
 dat <- potato[,7:length(potato)]
 
 # so it's also possible to just exclude the citric acid variable:
@@ -814,17 +843,17 @@ final_cv_plot <-
   ylab("CV error") +
   xlab("Method")
 
-save(list = c("y_fit",
-              "losses", "ml_screeplot", "CD_y", "lasso_y", "ssc_cv_final", "sscovr_rsq_y",
-              "lasso_scr", "alpha_ridge_chosen", "cd_scr",
-              
-              "pls_rsq", "pls_cv_final", "pls_l1", "pls_l1_value",
-              
-              "pcr_ridge", "pcr_CD","pcr_lasso", "pcr_rsq", "pcr_cv_final",
-              "pcr_ridge_scr", "pcr_lasso_scr", "pcr_cd_scr",
-              
-              "spc_lasso_y", "spc_rsq", "spc_cv_final",
-              "spc_lasso_scr", 
-              
-              "final_cv_plot", "final_cv_df"),
-     file = "C:\\Users\\park\\Desktop\\Rstudio Github - Copy\\Project2_SPCovR\\paper2_writing\\empirical_results.Rdata")
+# save(list = c("y_fit",
+#               "losses", "ml_screeplot", "CD_y", "lasso_y", "ssc_cv_final", "sscovr_rsq_y",
+#               "lasso_scr", "alpha_ridge_chosen", "cd_scr",
+#               
+#               "pls_rsq", "pls_cv_final", "pls_l1", "pls_l1_value",
+#               
+#               "pcr_ridge", "pcr_CD","pcr_lasso", "pcr_rsq", "pcr_cv_final",
+#               "pcr_ridge_scr", "pcr_lasso_scr", "pcr_cd_scr",
+#               
+#               "spc_lasso_y", "spc_rsq", "spc_cv_final",
+#               "spc_lasso_scr", 
+#               
+#               "final_cv_plot", "final_cv_df"),
+#      file = "C:\\Users\\park\\Desktop\\Rstudio Github - Copy\\Project2_SPCovR\\paper2_writing\\empirical_results.Rdata")
