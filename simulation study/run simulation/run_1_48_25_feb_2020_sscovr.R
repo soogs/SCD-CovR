@@ -1,13 +1,16 @@
-# testing ground # 
+# revision of simulation for project 2 #
+# 25-feb-2020 #
+
+# batch 1 (low dimensional): 1 ~ 48
 
 # i test every condition 3 times: 
 
 # 1. functions loaded ####
-setwd("D:\\Park\\oct02_new_simulation\\")
+setwd("C:\\Users\\park\\Desktop\\project_sscovr_revision\\functions\\")
 Rcpp::sourceCpp("./sparseSCA.cpp")
 Rcpp::sourceCpp("./updateW.cpp")
 source("./conditions_making.R")
-source("./evaluation_criteria.R")
+# source("./evaluation_criteria.R")
 source("./sscovr_looking_in.R")
 source("./spcovrdata.R")
 source("./cv_eigenvector_general.R")
@@ -15,18 +18,13 @@ source("./findLasso_sscovr_differentpenalties_adding_tryCatch_to_july10_version.
 source("./findLasso_SCaDs.R")
 source("./scad_cv.R")
 
-# pycal function calculates the py regression coefficients #
-pycal <- function(strongvaf1, strongvaf2, weakvaf, strongpy, weak_vafy){
-  py <- sqrt((weak_vafy * ((strongvaf1 * strongpy)^2 + (strongvaf2 * strongpy)^2) ) / (weakvaf^2 - weakvaf^2 * weak_vafy))
-  return (py)
-}
 
 # 2. replication starts ####
 set.seed(98) # previously i used seed 6397, 2212
 model_seed <- sample(x = 1:100000, size = nrow(condition_df))
 noise_seed <- sample(x = 1:100000, size = nrow(condition_df))
 
-reps_to_do <- 1:800
+reps_to_do <- 1:48
 
 needed_objects <- ls()
 
@@ -71,18 +69,28 @@ for (rrr in reps_to_do){
   
   if (cond$relevant == "common"){
     
-    rel_py <- pycal(strongvaf1 = 0.5, strongvaf2 = 0.4, weakvaf = 0.1, strongpy = 0.3, weak_vafy = 2/3)
+    if (cond$weak == "distinctive"){
+      Py <- c(1.2, -0.3, 0.48)
+    } 
     
-    Py <- c(0.3, -0.3, rel_py)
+    if (cond$weak == "common"){
+      Py <- c(0.24, -0.3, 2.4)
+    }
+    
   }
   
   
   if (cond$relevant == "distinctive"){
     
-    rel_py <- pycal(strongvaf1 = 0.5, strongvaf2 = 0.4, weakvaf = 0.1, strongpy = 0.3, weak_vafy = 2/3)
+    if (cond$weak == "common"){
+      Py <- c(0.48, -0.3, 1.2)
+    }
     
-    Py <- c(rel_py, -0.3, 0.3)
+    if (cond$weak == "distinctive"){
+      Py <- c(2.4, -0.3, 0.24)
+    }
   }
+  
   
   cond$components <- as.numeric(cond$components)
   cond$vafx <- as.numeric(cond$vafx)
@@ -432,7 +440,7 @@ for (rrr in reps_to_do){
        spcovr1, spcovrlasso, 
        scad1, scadlasso, scad_cd, scad_ridge, scadreg, fixW, 
        sgcca1, sgccareg, cond, time_taken,
-       file = paste("./results_ridge_top/ridge_top_", rrr, ".Rdata",sep = ""))
+       file = paste("../simulation study/results/results2/results_25_feb_2020_", rrr, ".Rdata",sep = ""))
   
   rm(list=setdiff(ls(), needed_objects))
   

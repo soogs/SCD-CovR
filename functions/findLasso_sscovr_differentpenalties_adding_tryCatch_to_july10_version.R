@@ -1,3 +1,11 @@
+# findlasso_sscovr function #
+
+# last modified: 2 May 2020 (only added comments) #
+
+# has the tryCatch function included in case the function fails
+# the penalties are found for each component
+
+
 findLasso_sscovr <- function(X, Y, zeros, R, init, ridge = 1e-6, blockcols, cdstructure, alpha, maxiterOut, maxiterIn){
   # zeros should be a vector
   
