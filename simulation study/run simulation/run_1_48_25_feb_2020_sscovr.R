@@ -1,12 +1,12 @@
 # revision of simulation for project 2 #
 # 25-feb-2020 #
+# last modified: 2 May 2020 #
 
 # batch 1 (low dimensional): 1 ~ 48
 
 # i test every condition 3 times: 
 
 # 1. functions loaded ####
-setwd("C:\\Users\\park\\Desktop\\project_sscovr_revision\\functions\\")
 Rcpp::sourceCpp("./sparseSCA.cpp")
 Rcpp::sourceCpp("./updateW.cpp")
 source("./conditions_making.R")

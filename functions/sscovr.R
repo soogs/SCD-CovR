@@ -1,17 +1,6 @@
-# pretty much copying the spcovr matlab function from the bmc paper #
+# SCD-CovR function #
 
-# this function works (checked against manual calculation) #
-# but a number of things have been changed for the comparison, 
-# so please alter those in order to use this function properly
-
-# the loss is calculated without dividing by 'sum of squares of Z'
-
-# edit 18042019: i do not allow a column full of zeros in the W matrix,
-# because this will disable the computation of the P matrix using the kernel trick
-
-# edit 23042019: i put different lambda values for each column of the component
-
-# Rcpp::sourceCpp( "C:\\Users\\TSB-MTO\\Desktop\\Soogeun\\updateW.cpp")
+# last modified: 2 May 2020 (only comments) #
 
 sscovr2 <- function(X, Y, blockcols, R, cdstructure = NULL, alpha, 
                    lambda1, lambda2, gamma = 3.7, inits = c("rational", "oracle", "multistart"), 

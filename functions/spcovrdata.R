@@ -1,7 +1,9 @@
-# altering the spcovrdata function #
+# spcovrdata #
+# last modified: 2 May 2020 (only comments) #
+
+# generates data under a PCovR model 
 
 # number of components = 3 #
-# error for Y generated such that it has zero-correlation with the componet scores #
 
 spcovrdata <- function(VAFx, VAFr = c(), VAFy, I, J, R, sparseamount, Py = c(), modelseed, noiseseed, VAFsum){
   
